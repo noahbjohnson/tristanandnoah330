@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/index.css">
-    <title>index</title>
+    <title>Translator</title>
 </head>
 <body>
 <header>
@@ -15,9 +15,13 @@
         <select name="language" id="language">
             <!-- the options for this select are populated by the javascript -->
         </select>
+</form>
+<form>
     <label for="inputText"></label>
         <textarea id="inputText" rows="4" cols="20"></textarea>
     <input type="button" onclick="clickedOn()" value="submit"/>
+    <label for="outputText"></label>
+        <textarea id="outputText" rows="4" cols="20"></textarea>
 </form>
 
 <p id="output"></p>

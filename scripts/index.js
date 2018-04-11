@@ -92,7 +92,7 @@ function clickedOn() { // handles the submit onclick
 
     // update html content
     $('#inputText').val(''); // clears input box
-    // $('#output').val(current.)
+    $('#outputText').val(current)
 
 }
 
