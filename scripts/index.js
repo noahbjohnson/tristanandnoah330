@@ -39,7 +39,7 @@ function funTranslate(language,text='ermahgerd'){
 
 }
 
-function clickon() {
+function clickedOn() {
     let textInput = document.getElementById('inputText').value;
     let textLanguage = document.getElementById('language').value;
 }
