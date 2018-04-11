@@ -14,7 +14,7 @@ let requestsList = [];
 class request{
     constructor(inputString,languageString){
         this.inputString = inputString;
-        this.len = length(this.inputString);
+        this.language = languageString;
 
 
         // Remove double spaces and trailing/leading spaces from the input string
@@ -29,19 +29,57 @@ class request{
 
         // create an api friendly string from the cleaned text
         this.uriString = encodeURI(this.cleanString);
+
+        // create a full url for the api
+        this.url = 'http://api.funtranslations.com/translate/'.concat(this.language).concat('.json').concat(this.uriString);
+
+
     }
     toString(){
         return this.cleanString;
     }
+    callAPI(){
+        // call the api function to translate the uri
+        this.apiResponse = funTranslate(this.language,this.cleanString);
+    }
 }
 
-function funTranslate(language,text='ermahgerd'){
+function funTranslate(language,uri){
+    // create the full api call url and content blob
+    url = 'https://crossorigin.me/'.concat('http://api.funtranslations.com/translate/').concat(language).concat('.json');
+    blob = new Blob([JSON.stringify(uri)], {type : 'application/json'});
+    // create the request object and return the response
+    apiRequest = new Request(url, {method: 'POST',body: uri,mode: "no-cors"});
+    response = fetch(apiRequest);
+    // response = fetchJsonp(apiRequest)
+    //     .then(res => res.json())
+    //     .then(json => console.log(json));
 
+    console.log(response);
+    return response
 }
 
-function clickedOn() {
+
+
+
+function clickedOn() { // handles the submit onclick
     let textInput = document.getElementById('inputText').value;
     let textLanguage = document.getElementById('language').value;
+
+    // form validation
+    if(textLanguage === null){
+        alert("You must select a language");
+        return 1
+    }
+    if(textInput === null){
+        alert("You must input text");
+        return 1
+    }
+
+    // create new request object and append to list
+    requestsList.push(new request(textInput,textLanguage))
+
+    // update html content
 }
 
 function populateSelect(selectId, sList) {
