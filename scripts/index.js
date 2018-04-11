@@ -26,6 +26,8 @@ class request{
         workingString = workingString.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
 
         this.cleanString = workingString;
+
+        // create an api friendly string from the cleaned text
         this.uriString = encodeURI(this.cleanString);
     }
     toString(){
