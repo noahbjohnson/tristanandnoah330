@@ -41,7 +41,7 @@ class request{
     callAPI(){
         // call the api function to translate the uri
         this.apiResponse = funTranslate(this.language,this.url);
-
+        // return this.apiResponse;
     }
 }
 

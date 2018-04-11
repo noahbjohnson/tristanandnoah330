@@ -1,14 +1,22 @@
-.topnav {
-    background-color: green;
+header {
+    display: block;
+    text-align: center;
 }
 
-.topnav a {
-    float: left;
-    display: block;
-    background-color: green;
-    color: black;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-    font-size: 17px;
+body {
+    background-color: lightblue;
+}
+
+form[id=text] {
+    align-items: center;
+    margin: 20px;
+}
+textarea {
+    width: 45%;
+}
+
+input[type=button] {
+    margin: 5px;
+    padding: 5px;
+    width: 5%;
 }
