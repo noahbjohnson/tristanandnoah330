@@ -8,7 +8,9 @@ Type: JS ECMA 6
 Requires: Jquery
  */
 
-let languageList = [/*'ermahgerd',*/'leetspeak','vulcan','brooklyn','uk2us','us2uk','morse','cockney','fudd'];
+let languageListFun = [/*'ermahgerd',*/'leetspeak','vulcan','brooklyn','uk2us','us2uk','morse','cockney','fudd'];
+let languageListReal = ['Spanish','English','French','Catalan','German','Danish','Greek','Italian','Norwegian',];
+let languageDictionaryReal = {'Afrikaans':'af','Catalan':'ca','Czech':'cs','Danish':'da','German':'de','Greek':'el','English':'en','Spanish':'es','French':'fr','Italian':'it','Norwegian':'nb'};
 let requestsList = [];
 let buffer = '';
 
@@ -32,7 +34,7 @@ class request{
         this.uriString = encodeURI(this.cleanString);
 
         // create a full url for the api
-        this.url = 'http://api.funtranslations.com/translate/'.concat(this.language).concat('.json?text=').concat(this.uriString);
+
 
 
     }
@@ -40,43 +42,54 @@ class request{
         return this.cleanString;
     }
     async callTranslate(){
-        // call the api function to translate the uri
-        this.response = funTranslate(this.url);
-        //this.translatedString = apiResponse.contents
-        // return this.apiResponse;
+        if(languageListFun.indexOf(this.language) > -1) {
+            this.url = 'http://api.funtranslations.com/translate/'.concat(this.language).concat('.json?text=').concat(this.uriString);
+            this.response = funTranslate(this.url);
+        }else{
+            this.url = 'https://translation.googleapis.com/language/translate/v2?q='.concat(this.uriString).concat('&key=AIzaSyC5p55eVsQ5yaOvHmdqjXrM3TsXwye017U&target=').concat(languageCode(this.language))
+            this.outputString = googleTranslate(this.url)
+        }
     }
 }
 
 async function funTranslate(url){
-    // create the full api call url and content blob
-    // url = 'https://crossorigin.me/'.concat('http://api.funtranslations.com/translate/').concat(language).concat('.json');
-    // blob = new Blob([JSON.stringify(uri)], {type : 'application/json'});
-    // create the request object and return the response
-    //apiRequest = new Request(url, {method: 'POST',mode: "no-cors"});
-    //let headers = new Headers;
-    //let ip = (Math.floor(Math.random() * 255) + 1)+"."+(Math.floor(Math.random() * 255) + 0)+"."+(Math.floor(Math.random() * 255) + 0)+"."+(Math.floor(Math.random() * 255) + 0);
-    //headers.append('X-Forwarded-For', ip);
-
-
-    await fetch(url).then((response) => {
-        console.log(response);
-        response.json().then((data) => {
-            console.log(data);
-            buffer = data["contents"]["translated"];
-            requestsList[requestsList.length -1].outputString = data["contents"]["translated"];
-            document.getElementById('output').innerHTML = data["contents"]["translated"];
+    try {
+        await fetch(url).then((response) => {
+            console.log(response);
+            response.json().then((data) => {
+                console.log(data);
+                buffer = data["contents"]["translated"];
+                requestsList[requestsList.length - 1].outputString = data["contents"]["translated"];
+                document.getElementById('output').innerHTML = data["contents"]["translated"];
+            });
         });
-    });
-    //response = fetch(apiRequest);
-    // response = fetchJsonp(apiRequest)
-    //     .then(res => res.json())
-    //     .then(json => console.log(json));
-
+    }
+    catch(error) {
+        alert('Error! Have you exceeded the 5/hr limit for fun translations?')
+    }
     console.log(buffer);
     return buffer
 }
 
+async function googleTranslate(url){
+    await fetch(url).then((response) => {
+        console.log(response);
+        response.json().then((data) => {
+            console.log(data);
+            console.log(data['data']["translations"][0]["translatedText"]);
+            buffer = data['data']["translations"][0]["translatedText"];
+            //buffer = data["contents"]["translated"];
+            //requestsList[requestsList.length -1].outputString = data["contents"]["translated"];
+            document.getElementById('output').innerHTML = buffer;
+        });
+    });
+    console.log(buffer);
+    return buffer
+}
 
+function languageCode(language){
+    return languageDictionaryReal[language]
+}
 
 
 function clickedOn() { // handles the submit onclick
@@ -104,19 +117,23 @@ function clickedOn() { // handles the submit onclick
     $('#inputText').val(''); // clears input box
 }
 
-function populateSelect(selectId, sList) {
+function populateLanguageSelect(selectId, sList, group) {
     let sel = document.getElementById(selectId);
+    let grp = document.createElement('optgroup');
+    grp.label = group;
     for (let s of sList) {
         let opt = document.createElement("option");
         opt.value = s;
         opt.innerHTML = s;
-        sel.appendChild(opt)
+        grp.appendChild(opt)
     }
+    sel.appendChild(grp)
 }
 
 
 $( document ).ready(function() {
-    populateSelect('language',languageList)
+    populateLanguageSelect('language',languageListReal,'Real Languages');
+    populateLanguageSelect('language',languageListFun,'Fun Languages')
 });
 
 

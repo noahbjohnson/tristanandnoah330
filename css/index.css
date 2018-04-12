@@ -10,7 +10,7 @@ body {
 
 form {
     align-items: center;
-    margin: 10vw;
+    margin-left: 10vw;
     width: 80vw;
 }
 textarea {
@@ -26,7 +26,6 @@ input[type=button] {
 
 #output {
     background-color: white;
-    margin: 10vw;
+    margin-left: 10vw;
     width: 80vw;
-    margin-top: 5px;
 }
