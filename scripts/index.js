@@ -8,14 +8,15 @@ Type: JS ECMA 6
 Requires: Jquery
  */
 
-let languageList = ['ermahgerd','leetspeak','vulcan'];
+let languageList = [/*'ermahgerd',*/'leetspeak','vulcan','brooklyn','uk2us','us2uk','morse','cockney','fudd'];
 let requestsList = [];
+let buffer = '';
 
 class request{
     constructor(inputString,languageString){
         this.inputString = inputString;
         this.language = languageString;
-
+        this.outputString = '';
 
         // Remove double spaces and trailing/leading spaces from the input string
         let workingString = this.inputString;
@@ -38,32 +39,41 @@ class request{
     toString(){
         return this.cleanString;
     }
-    callAPI(){
+    async callTranslate(){
         // call the api function to translate the uri
-        this.apiResponse = funTranslate(this.language,this.url);
+        this.response = funTranslate(this.url);
+        //this.translatedString = apiResponse.contents
         // return this.apiResponse;
     }
 }
 
-function funTranslate(language,url){
+async function funTranslate(url){
     // create the full api call url and content blob
     // url = 'https://crossorigin.me/'.concat('http://api.funtranslations.com/translate/').concat(language).concat('.json');
     // blob = new Blob([JSON.stringify(uri)], {type : 'application/json'});
     // create the request object and return the response
     //apiRequest = new Request(url, {method: 'POST',mode: "no-cors"});
-    response = fetch(url).then(function(response) {
-        return response.json();
-    })
-    .then(function(myJson) {
-        console.log(myJson);
+    //let headers = new Headers;
+    //let ip = (Math.floor(Math.random() * 255) + 1)+"."+(Math.floor(Math.random() * 255) + 0)+"."+(Math.floor(Math.random() * 255) + 0)+"."+(Math.floor(Math.random() * 255) + 0);
+    //headers.append('X-Forwarded-For', ip);
+
+
+    await fetch(url).then((response) => {
+        console.log(response);
+        response.json().then((data) => {
+            console.log(data);
+            buffer = data["contents"]["translated"];
+            requestsList[requestsList.length -1].outputString = data["contents"]["translated"];
+            document.getElementById('output').innerHTML = data["contents"]["translated"];
+        });
     });
     //response = fetch(apiRequest);
     // response = fetchJsonp(apiRequest)
     //     .then(res => res.json())
     //     .then(json => console.log(json));
 
-    console.log(response);
-    return response
+    console.log(buffer);
+    return buffer
 }
 
 
@@ -88,12 +98,10 @@ function clickedOn() { // handles the submit onclick
 
     // call the api
     let current = requestsList[requestsList.length -1];
-    current.callAPI();
+    current.callTranslate();
 
     // update html content
     $('#inputText').val(''); // clears input box
-    $('#outputText').val(current)
-
 }
 
 function populateSelect(selectId, sList) {

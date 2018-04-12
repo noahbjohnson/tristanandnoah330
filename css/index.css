@@ -5,18 +5,28 @@ header {
 
 body {
     background-color: lightblue;
+    text-align: center;
 }
 
-form[id=text] {
+form {
     align-items: center;
-    margin: 20px;
+    margin: 10vw;
+    width: 80vw;
 }
 textarea {
-    width: 45%;
+    width: 100%;
+    max-width: 100%;
+    min-width: 100%;
 }
 
 input[type=button] {
     margin: 5px;
     padding: 5px;
-    width: 5%;
+}
+
+#output {
+    background-color: white;
+    margin: 10vw;
+    width: 80vw;
+    margin-top: 5px;
 }
