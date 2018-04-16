@@ -15,10 +15,10 @@ let requestsList = [];
 let buffer = '';
 
 class request{
-    constructor(inputString,languageString){
+    constructor(inputString,languageString){ // constructs the request class -- not to be confused with Request class which is a built-in
         this.inputString = inputString;
         this.language = languageString;
-        this.outputString = '';
+        this.outputString = ''; // Declare output for later assignment by translation function
 
         // Remove double spaces and trailing/leading spaces from the input string
         let workingString = this.inputString;
@@ -33,15 +33,15 @@ class request{
         // create an api friendly string from the cleaned text
         this.uriString = encodeURI(this.cleanString);
 
-        // create a full url for the api
-
-
-
     }
-    toString(){
-        return this.cleanString;
+    toString(){ // returns the input, and if translated successfully, the output after
+        if(outputString.length > 0) {
+            return this.cleanString.concat(':').concat(outputString);
+        }else{
+            return this.cleanString
+        }
     }
-    async callTranslate(){
+    async callTranslate(){ // determine which translate api to use and pass the call to the fetch function for the type
         if(languageListFun.indexOf(this.language) > -1) {
             this.url = 'http://api.funtranslations.com/translate/'.concat(this.language).concat('.json?text=').concat(this.uriString);
             this.response = funTranslate(this.url);
@@ -52,7 +52,7 @@ class request{
     }
 }
 
-async function funTranslate(url){
+async function funTranslate(url){ // translates requests where the target language is in the 'fun list'
     try {
         await fetch(url).then((response) => {
             console.log(response);
@@ -71,15 +71,13 @@ async function funTranslate(url){
     return buffer
 }
 
-async function googleTranslate(url){
+async function googleTranslate(url){ // translates request where the target language is a real language
     await fetch(url).then((response) => {
         console.log(response);
         response.json().then((data) => {
             console.log(data);
             console.log(data['data']["translations"][0]["translatedText"]);
             buffer = data['data']["translations"][0]["translatedText"];
-            //buffer = data["contents"]["translated"];
-            //requestsList[requestsList.length -1].outputString = data["contents"]["translated"];
             document.getElementById('output').innerHTML = buffer;
         });
     });
@@ -87,8 +85,18 @@ async function googleTranslate(url){
     return buffer
 }
 
-function languageCode(language){
+function languageCode(language){ // returns the ISO language code for use in the google translate api call
     return languageDictionaryReal[language]
+}
+
+function storeRequests(){ // stores the list of requests
+    localStorage.setItem("Requests",JSON.stringify(requestsList))
+}
+
+function loadRequests() {
+    if(localStorage.getItem("Requests")) {
+        requestsList = JSON.parse(localStorage.getItem("Requests"))
+    }
 }
 
 
@@ -105,6 +113,10 @@ function clickedOn() { // handles the submit onclick
         alert("You must input text");
         return 1
     }
+    if(textInput.length > 2500){
+        alert("input too long!");
+        return 1
+    }
 
     // create new request object and append to list
     requestsList.push(new request(textInput,textLanguage));
@@ -113,11 +125,14 @@ function clickedOn() { // handles the submit onclick
     let current = requestsList[requestsList.length -1];
     current.callTranslate();
 
-    // update html content
     $('#inputText').val(''); // clears input box
+
+    // Store updated request list in local 'Requests'
+    storeRequests();
+
 }
 
-function populateLanguageSelect(selectId, sList, group) {
+function populateLanguageSelect(selectId, sList, group) { // populates a drop-down with sections
     let sel = document.getElementById(selectId);
     let grp = document.createElement('optgroup');
     grp.label = group;
@@ -132,8 +147,12 @@ function populateLanguageSelect(selectId, sList, group) {
 
 
 $( document ).ready(function() {
+    // Populate the language options on page ready
     populateLanguageSelect('language',languageListReal,'Real Languages');
-    populateLanguageSelect('language',languageListFun,'Fun Languages')
+    populateLanguageSelect('language',languageListFun,'Fun Languages');
+
+    // Load history from local
+    loadRequests()
 });
 
 
