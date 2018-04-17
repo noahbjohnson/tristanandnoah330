@@ -10,6 +10,7 @@
 <header>
     <h1>Word-Play</h1>
     <h4>Due to the public nature of this service, submissions for 'fun' languages are limited at 5/hr/IP Address</h4>
+    <button onclick="localStorage.clear();location.reload()" style="margin-bottom: 5vh">Clear History</button>
 </header>
 <form>
     <label for="language">Language</label>
@@ -26,15 +27,11 @@
     <p id="output">Your outputted text will appear here</p>
 </div>
 
+
+<h4>History:</h4>
 <div id="history">
     <table id="logTable">
-        <thead>
-        <tr>
-            <th>Input Text</th>
-            <th>Language</th>
-            <th>Output Text</th>
-        </tr>
-        </thead>
+
     </table>
 </div>
 

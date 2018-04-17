@@ -36,3 +36,15 @@ td {
 #history {
     width: 100%;
 }
+#logTable {
+    width: 80%;
+    text-align: center;
+    margin-left: 10%;
+    background-color: white;
+}
+
+tr:nth-child(even) {background: #CCC}
+
+tr {
+    text-align: center;
+}

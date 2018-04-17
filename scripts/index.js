@@ -40,8 +40,9 @@ class request{
         }else{
             return this.cleanString
         }
+
     }
-    async callTranslate(){ // determine which translate api to use and pass the call to the fetch function for the type
+    callTranslate(){ // determine which translate api to use and pass the call to the fetch function for the type
         if(languageListFun.indexOf(this.language) > -1) {
             this.url = 'http://api.funtranslations.com/translate/'.concat(this.language).concat('.json?text=').concat(this.uriString);
             this.response = funTranslate(this.url);
@@ -50,6 +51,29 @@ class request{
             this.outputString = googleTranslate(this.url)
         }
     }
+    // getSummary(){
+    //     if(! this.summary) {
+    //         if (this.cleanString.length > 140) {
+    //             let input = this.cleanString.slice(0, 140);
+    //         } else {
+    //             let input = this.cleanString;
+    //         }
+    //         if (this.language.length > 140) {
+    //             let language = this.language.slice(0, 140);
+    //         } else {
+    //             let language = this.language;
+    //         }
+    //         if (this.outputString.length > 140) {
+    //             let output = this.outputString.slice(0, 140);
+    //         } else {
+    //             let output = this.outputString;
+    //         }
+    //
+    //         this.summary = [input, language, output];
+    //     }
+    //
+    //     return this.summary
+    // }
 }
 
 async function funTranslate(url){ // translates requests where the target language is in the 'fun list'
@@ -61,6 +85,7 @@ async function funTranslate(url){ // translates requests where the target langua
                 buffer = data["contents"]["translated"];
                 requestsList[requestsList.length - 1].outputString = data["contents"]["translated"];
                 document.getElementById('output').innerHTML = data["contents"]["translated"];
+                addRow(buffer);
             });
         });
     }
@@ -78,7 +103,9 @@ async function googleTranslate(url){ // translates request where the target lang
             console.log(data);
             console.log(data['data']["translations"][0]["translatedText"]);
             buffer = data['data']["translations"][0]["translatedText"];
+            addRow(buffer);
             document.getElementById('output').innerHTML = buffer;
+            requestsList[requestsList.length - 1].outputString = data['data']["translations"][0]["translatedText"];
         });
     });
     console.log(buffer);
@@ -99,8 +126,25 @@ function loadRequests() {
     }
 }
 
+function storeHistory() {
+    localStorage.setItem("History",JSON.stringify(document.getElementById('logTable').innerHTML))
+}
 
-function clickedOn() { // handles the submit onclick
+function loadHistory() {
+    if(localStorage.getItem("History")) {
+        document.getElementById('logTable').innerHTML = JSON.parse(localStorage.getItem("History"))
+    }
+}
+
+function addRow(rowData){
+    let table = document.getElementById('logTable');
+    let newRow = document.createElement('tr');
+    newRow.innerHTML = rowData;
+    table.appendChild(newRow);
+}
+
+
+async function clickedOn() { // handles the submit onclick
     let textInput = document.getElementById('inputText').value;
     let textLanguage = document.getElementById('language').value;
 
@@ -123,12 +167,15 @@ function clickedOn() { // handles the submit onclick
 
     // call the api
     let current = requestsList[requestsList.length -1];
-    current.callTranslate();
+    await current.callTranslate();
 
     $('#inputText').val(''); // clears input box
 
+    // current.getSummary();
+
     // Store updated request list in local 'Requests'
     storeRequests();
+    storeHistory()
 
 }
 
@@ -152,7 +199,8 @@ $( document ).ready(function() {
     populateLanguageSelect('language',languageListFun,'Fun Languages');
 
     // Load history from local
-    loadRequests()
+    loadRequests();
+    loadHistory()
 });
 
 
