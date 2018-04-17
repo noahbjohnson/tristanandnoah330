@@ -47,8 +47,8 @@ class request{
             this.url = 'http://api.funtranslations.com/translate/'.concat(this.language).concat('.json?text=').concat(this.uriString);
             this.response = funTranslate(this.url);
         }else{
-            this.url = 'https://translation.googleapis.com/language/translate/v2?q='.concat(this.uriString).concat('&key=AIzaSyC5p55eVsQ5yaOvHmdqjXrM3TsXwye017U&target=').concat(languageCode(this.language))
-            this.outputString = googleTranslate(this.url)
+            this.url = 'https://translation.googleapis.com/language/translate/v2?q='.concat(this.uriString).concat('&key=AIzaSyC5p55eVsQ5yaOvHmdqjXrM3TsXwye017U&target=').concat(languageCode(this.language));
+            this.outputString = googleTranslate(this.url);
         }
     }
     // getSummary(){
@@ -202,7 +202,3 @@ $( document ).ready(function() {
     loadRequests();
     loadHistory()
 });
-
-
-
-
