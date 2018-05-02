@@ -127,7 +127,7 @@ function loadRequests() {
 }
 
 function storeHistory() {
-    localStorage.setItem("History",JSON.stringify(document.getElementById('logTable').innerHTML))
+    localStorage.setItem("History",document.getElementById('logTable').innerHTML)
 }
 
 function loadHistory() {
